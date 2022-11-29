@@ -85,18 +85,31 @@ app.get("/districts/:districtId", async (request, response) => {
 //7//
 app.get("/states/:stateId/stats", async (request, response) => {
   const { stateId } = request.params;
-  const getStates = `SELECT * FROM district WHERE
+  const getStats = `
+  SELECT 
+    SUM(cases),
+    SUM(cured),
+    SUM(active),
+    SUM(deaths)
+  FROM 
+    district  
+  WHERE
    state_id = ${stateId};`;
-  const states = await db.all(getStates);
-  response.send(convertObj7(states));
+  const stats = await db.get(getStats);
+  response.send({
+    totalCases: stats["SUM(cases)"],
+    totalCured: stats["SUM(cured)"],
+    totalActive: stats["SUM(active)"],
+    totalDeaths: stats["SUM(deaths)"],
+  });
 });
 
 //8//
 app.get("/districts/:districtId/details/", async (request, response) => {
   const { districtId } = request.params;
-  const getStates = `SELECT * FROM state INNER JOIN 
-  district ON state_id = district.state_id
-  WHERE district.district_id = ${districtId};`;
+  const getStates = `SELECT state_name FROM district NATURAL JOIN 
+  state
+  WHERE district_id = ${districtId};`;
   const states = await db.get(getStates);
   response.send(convertObj8(states));
 });

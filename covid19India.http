@@ -9,7 +9,7 @@ GET http://localhost:3000/districts/322/
 
 ###
 
-GET http://localhost:3000/districts/7/details
+GET http://localhost:3000/districts/2/details
 
 ###
 
